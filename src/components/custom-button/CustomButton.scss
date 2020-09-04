@@ -5,7 +5,7 @@
     letter-spacing: 0.5px;
     line-height: 50px;
     padding: 0 35px 0 35px;
-    font-size: 15px;
+    font-size: 14px;
     background-color: black;
     color: white;
     text-transform: uppercase;
@@ -36,6 +36,7 @@
       background-color: #4285f4;
       color: white;
       margin-left: 2rem;
+      font-size: 14px;
 
       &:hover {
         background-color: #357ae8;
@@ -47,6 +48,7 @@
       background-color: black;
       color: white;
       border: none;
+      font-size: inherit;
 
       &:hover {
         background-color: white;
