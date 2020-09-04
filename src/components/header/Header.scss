@@ -1,0 +1,46 @@
+.header {
+    height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  
+    .logo-container {
+      height: 100%;
+      margin-top: 20px;
+      padding-left: 25px;
+      width: 70px;
+
+      .logo {
+          height: 50px;
+          width: auto;
+          transform: scale(1);
+          transition: 0.2s cubic-bezier(0.20, 0.50, 0.50, 1);
+          &:hover {
+              transform: scale(1.1);
+              transition: 1.2s cubic-bezier(0.20, 0.50, 0.50, 1);
+          }
+      }
+    }
+  
+    .options {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+  
+      .option {
+        padding: 10px 15px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+
+        &:hover {
+            text-shadow: 1px 1px 10px rgb(202, 199, 199);
+        }
+      }
+    }
+  }
+  
