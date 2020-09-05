@@ -16,7 +16,6 @@ import { createStructuredSelector } from 'reselect';
 const Header = ({currentUser, hidden, cartItems, authUser}) => {
 
     const onSignOut = async () => {
-        console.log('Saving Cart');
         await setUserCartData(authUser, cartItems);
         auth.signOut();
         window.location.reload(true);
@@ -28,7 +27,7 @@ const Header = ({currentUser, hidden, cartItems, authUser}) => {
                 <Logo className='logo' />
             </Link>
             <div className='options'>
-                <Link onClick={() => console.log(currentUser)} className='option' to='/shop'>
+                <Link className='option' to='/shop'>
                     SHOP
                 </Link>
                 <Link className='option' to='/contact'>
