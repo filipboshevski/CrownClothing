@@ -32,9 +32,9 @@ export const selectLocalCartItems = createSelector(
 export const SelectLocalCartItemCount = createSelector(
     [selectLocalCartItems],
     localCartItems => localCartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.quantity, 0)
-)
+);
 
 export const SelectLocalCartTotal = createSelector(
     [selectLocalCartItems],
     localCartItems => localCartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.quantity * cartItem.price, 0)
-)
+);

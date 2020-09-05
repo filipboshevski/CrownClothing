@@ -42,4 +42,4 @@ export const clearItemFromLocalCart = item => ({
 export const setLocalCartItems = localCartItems => ({
     type: localCartActionTypes.SET_LOCAL_CART_ITEMS,
     payload: localCartItems
-})
+});

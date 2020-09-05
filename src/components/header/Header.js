@@ -12,13 +12,14 @@ import CartDropDown from '../cart-dropdown/CartDropDown';
 import { selectCartHidden, selectCartItems } from '../../redux/cart/CartSelectors';
 import { selectCurrentUser } from '../../redux/user/UserSelectors';
 import { createStructuredSelector } from 'reselect';
+import { toggleCanSave } from '../../redux/save/SaveAction';
 
-const Header = ({currentUser, hidden, cartItems, authUser}) => {
+const Header = ({currentUser, hidden, cartItems, authUser, toggleCanSave}) => {
 
     const onSignOut = async () => {
         await setUserCartData(authUser, cartItems);
-        auth.signOut();
-        window.location.reload(true);
+        await auth.signOut();
+        toggleCanSave();
     }
 
     return (
@@ -53,4 +54,8 @@ const mapStateToProps = createStructuredSelector({
     cartItems: selectCartItems
 });
 
-export default connect(mapStateToProps)(Header);
+const mapDispatchToProps = dispatch => ({
+    toggleCanSave: () => dispatch(toggleCanSave())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

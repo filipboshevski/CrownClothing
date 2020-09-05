@@ -60,8 +60,6 @@ export const setUserCartData = async (userAuth, cartItems) => {
     const batch = firestore.batch();
 
     try {
-        if (!cartItems.length) return;
-
         await batch.set(userRef, { cartItems: [...cartItems] }, { merge: true });
     } catch(error) {
         console.log('Error while saving user data', error);
