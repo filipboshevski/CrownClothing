@@ -19,6 +19,7 @@ const Header = ({currentUser, hidden, cartItems, authUser}) => {
         console.log('Saving Cart');
         await setUserCartData(authUser, cartItems);
         auth.signOut();
+        window.location.reload(true);
     }
 
     return (

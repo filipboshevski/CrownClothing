@@ -9,7 +9,7 @@ import { auth, createUserProfileDocument, setUserCartData } from './components/f
 import { setCurrentUser } from './redux/user/UserActions';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from './redux/user/UserSelectors';
-import { selectCartItems, selectLocalCartItems } from './redux/cart/CartSelectors';
+import { selectCartItems } from './redux/cart/CartSelectors';
 import { createStructuredSelector } from 'reselect';
 import Checkout from './components/pages/Checkout/Checkout';
 import { setCartItems } from './redux/cart/CartActions';
@@ -19,7 +19,7 @@ class App extends React.Component {
   authUser = null;
 
   componentDidMount() {
-    const { setCurrentUser, setCartItems, localCartItems, cartItems } = this.props;
+    const { setCurrentUser, setCartItems, cartItems } = this.props;
     
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
       this.authUser = authUser;
@@ -62,8 +62,7 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  cartItems: selectCartItems,
-  localCartItems: selectLocalCartItems
+  cartItems: selectCartItems
 });
 
 const mapDispatchToProps = dispatch => ({
