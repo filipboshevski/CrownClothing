@@ -5,31 +5,39 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Shop from './components/pages/Shop/Shop';
 import Header from './components/header/Header';
 import SignInSignUp from './components/pages/sign-in-sign-up/SignIn-SignUp';
-import { auth, createUserProfileDocument } from './components/firebase/FirebaseUtilities';
+import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
 import { setCurrentUser } from './redux/user/UserActions';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from './redux/user/UserSelectors';
-import { selectCartItems } from './redux/cart/CartSelectors';
+import { selectCartItems, selectLocalCartItems } from './redux/cart/CartSelectors';
 import { createStructuredSelector } from 'reselect';
 import Checkout from './components/pages/Checkout/Checkout';
+import { setCartItems } from './redux/cart/CartActions';
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
+  authUser = null;
 
   componentDidMount() {
+    const { setCurrentUser, setCartItems, localCartItems, cartItems } = this.props;
+    
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
+      this.authUser = authUser;
+
       if (authUser) {
         const userRef = await createUserProfileDocument(authUser);
-        // const userCartData = await setUserCartData(authUser, this.props.cartItems);
+        await setUserCartData(authUser, cartItems);
 
         await userRef.onSnapshot(snapShot => {
-            this.props.setCurrentUser({
+            setCurrentUser({
               id: snapShot.id,
               ...snapShot.data()
             });
+            setCartItems(snapShot.data().cartItems);
         });
       }
-      this.props.setCurrentUser(authUser);
+
+      setCurrentUser(authUser);
     })
   }
 
@@ -40,7 +48,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header authUser={this.authUser} />
         <Switch>
           <Route exact component={HomePage} path='/'/>
           <Route component={Shop} path='/shop'/>
@@ -54,11 +62,13 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  cartItems: selectCartItems
+  cartItems: selectCartItems,
+  localCartItems: selectLocalCartItems
 });
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  setCurrentUser: user => dispatch(setCurrentUser(user)),
+  setCartItems: cartItems => dispatch(setCartItems(cartItems))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

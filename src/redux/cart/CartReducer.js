@@ -12,7 +12,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 hidden: !state.hidden
-            };
+            }
         case cartActionTypes.ADD_ITEM:
             return {
                 ...state,
@@ -27,6 +27,11 @@ const cartReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 cartItems: removeItemFromCart(state.cartItems, action.payload)
+            }
+        case cartActionTypes.SET_CART_ITEMS:
+            return {
+                ...state,
+                cartItems: [...action.payload]
             }
         default:
             return state;

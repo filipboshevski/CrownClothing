@@ -3,9 +3,11 @@ import React from 'react';
 import './CollectionItem.scss';
 import CustomButton from '../custom-button/CustomButton';
 import { connect } from 'react-redux';
-import { addCartItem } from '../../redux/cart/CartActions';
+import { addCartItem, addLocalCartItem } from '../../redux/cart/CartActions';
+import { selectCurrentUser } from '../../redux/user/UserSelectors';
+import { createStructuredSelector } from 'reselect';
 
-const CollectionItem = ({item, addItem}) => {
+const CollectionItem = ({item, addItem, addLocalItem, currentUser}) => {
     const {id, name, price, imageUrl} = item;
     return (
         <div key={id} className='collection-item'>
@@ -14,13 +16,18 @@ const CollectionItem = ({item, addItem}) => {
                 <span className='name'>{name}</span>
                 <span className='price'>$ {price}</span>
             </div>
-            <CustomButton onClick={() => addItem(item)} inverted>ADD TO CART</CustomButton>
+            <CustomButton onClick={() => { currentUser ? addItem(item) : addLocalItem(item) }} inverted>ADD TO CART</CustomButton>
         </div>
     )
 }
 
-const mapDispatchToProps = dispatch => ({
-    addItem: item => dispatch(addCartItem(item))
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser
 })
 
-export default connect(null, mapDispatchToProps)(CollectionItem);
+const mapDispatchToProps = dispatch => ({
+    addItem: item => dispatch(addCartItem(item)),
+    addLocalItem: item => dispatch(addLocalCartItem(item))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionItem);

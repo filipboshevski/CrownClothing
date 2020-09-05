@@ -33,11 +33,13 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!snapShot.exists) {
         const createdAt = new Date();
         const { displayName, email } = userAuth;
+        const cartItems = [];
         try {
             await userRef.set({
                 createdAt,
                 displayName,
                 email,
+                cartItems,
                 ...additionalData
             });
         } catch(error) {
@@ -47,24 +49,25 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     return userRef;
 }
 
-export const setUserCartData = async (userAuth, cartData) => {
+export const setUserCartData = async (userAuth, cartItems) => {
     if (!userAuth) return;
     
-    const userRef = firestore.doc(`users/${userAuth.uid}`);
+    const userRef = await firestore.doc(`users/${userAuth.uid}`);
     const snapShot = await userRef.get();
 
     if (!snapShot.exists) return;
 
+    const batch = firestore.batch();
+
     try {
-        await userRef.set({
-            ...cartData,
-            ...snapShot.data(),
-        });
+        if (!cartItems.length) return;
+
+        await batch.set(userRef, { cartItems: [...cartItems] }, { merge: true });
     } catch(error) {
         console.log('Error while saving user data', error);
     }
 
-    return snapShot.data().cartData;
+    await batch.commit();
 }
 
 export default firebase;
