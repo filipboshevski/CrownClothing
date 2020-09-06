@@ -19,6 +19,7 @@ import WithSpinner from './components/spinner/WithSpinner';
 
 const CheckoutWithSpinner = WithSpinner(Checkout);
 const HomePageWithSpinner = WithSpinner(HomePage);
+const SignInSignUpWithSpinner = WithSpinner(SignInSignUp);
 
 class App extends React.Component {
 
@@ -69,7 +70,7 @@ class App extends React.Component {
           <Route exact render={(props) => <HomePageWithSpinner isLoading={this.state.loading} {...props} />} path='/'/>
           <Route component={Shop} path='/shop'/>
           <Route exact render={(props) => <CheckoutWithSpinner isLoading={this.state.loading} {...props} />} path='/checkout' />
-          <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInSignUp />)}/>
+          <Route exact path='/signin' render={(props) => this.props.currentUser ? (<Redirect to='/' />) : (<SignInSignUpWithSpinner isLoading={this.state.loading} {...props} />)}/>
         </Switch>
       </div>
     );
