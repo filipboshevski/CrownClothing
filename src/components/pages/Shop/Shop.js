@@ -12,7 +12,6 @@ const CollectionWithSpinner = WithSpinner(Collection);
 
 
 class Shop extends React.Component {
-
     state = {
         loading: true
     };
