@@ -38,11 +38,12 @@ class App extends React.Component {
 
       if (authUser) {
         const userRef = await createUserProfileDocument(authUser);
-        toggleCanSave();
         
         if (canSave) {
           await setUserCartData(authUser, cartItems);
         }
+
+        toggleCanSave();
 
         await userRef.onSnapshot(snapShot => {
           setCurrentUser({

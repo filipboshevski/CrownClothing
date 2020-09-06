@@ -46,7 +46,7 @@ class Header extends React.Component {
                         ) :
                         <Link onClick={toggleCartHiddenFalse} className='option' to='/signin'>SIGN IN</Link>
                     }
-                    <CartIcon />
+                    <CartIcon isLoading={this.props.isLoading} />
                     { hidden ? null : <CartDropDown /> }
                 </div>
             </div>
