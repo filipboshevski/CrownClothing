@@ -6,7 +6,7 @@ import Shop from './components/pages/Shop/Shop';
 import Header from './components/header/Header';
 import SignInSignUp from './components/pages/sign-in-sign-up/SignIn-SignUp';
 import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
-import { setCurrentUser } from './redux/user/UserActions';
+import { setCurrentUser, setAuthUser } from './redux/user/UserActions';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from './redux/user/UserSelectors';
 import { selectCartItems } from './redux/cart/CartSelectors';
@@ -28,22 +28,18 @@ class App extends React.Component {
   }
 
   unsubscribeFromAuth = null;
-  authUser = null;
-
+  
   componentDidMount() {
-    const { setCurrentUser, setCartItems, cartItems, toggleCanSave, canSave } = this.props;
+    const { setCurrentUser, setCartItems, cartItems, toggleCanSave, canSave, setAuthUser } = this.props;
     
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
-      this.authUser = authUser;
 
       if (authUser) {
         const userRef = await createUserProfileDocument(authUser);
-        
+
         if (canSave) {
           await setUserCartData(authUser, cartItems);
         }
-
-        toggleCanSave();
 
         await userRef.onSnapshot(snapShot => {
           setCurrentUser({
@@ -51,6 +47,8 @@ class App extends React.Component {
             ...snapShot.data()
           });
           setCartItems(snapShot.data().cartItems);
+          setAuthUser(authUser);
+          toggleCanSave();
         });
       }
       
@@ -87,7 +85,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)),
   setCartItems: cartItems => dispatch(setCartItems(cartItems)),
-  toggleCanSave: () => dispatch(toggleCanSave())
+  toggleCanSave: () => dispatch(toggleCanSave()),
+  setAuthUser: authUser => dispatch(setAuthUser(authUser))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

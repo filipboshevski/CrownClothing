@@ -1,7 +1,8 @@
 import userActionTypes from "./UserTypes";
 
 const INITIAL_STATE = {
-    currentUser: null
+    currentUser: null,
+    authUser: null
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -10,6 +11,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 currentUser: action.payload
+            }
+        case 'SET_AUTH_USER':
+            return {
+                ...state,
+                authUser: action.payload
             }
         default:
             return state;

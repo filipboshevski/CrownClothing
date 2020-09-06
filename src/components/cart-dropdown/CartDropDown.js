@@ -14,12 +14,12 @@ import { selectCurrentUser } from '../../redux/user/UserSelectors';
 const CartDropDown = ({cartItems, localCartItems, currentUser, history, dispatch}) => {
     return (
         <div className='cart-dropdown'>
-            <div className='cart-items'>
+            <div className='cart-items' key={currentUser ? 1 : 2} >
                 {
                     currentUser ? 
-                    (cartItems.length ? cartItems.map( cartItem => <CartItem key={cartItem.id} item={cartItem} />) : <span className='empty-message'>Your cart is empty</span>) 
+                    (cartItems.length ? cartItems.map( cartItem => <CartItem key={cartItem.id} item={cartItem} />) : <span key={50} className='empty-message'>Your cart is empty</span>) 
                     :
-                    (localCartItems.length ? localCartItems.map( cartItem => <CartItem key={cartItem.id} item={cartItem} />) : <span className='empty-message'>Your cart is empty</span>)
+                    (localCartItems.length ? localCartItems.map( cartItem => <CartItem key={cartItem.id} item={cartItem} />) : <span key={51} className='empty-message'>Your cart is empty</span>)
                 }
             </div>
             <CustomButton onClick={() => {

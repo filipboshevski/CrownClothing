@@ -10,7 +10,7 @@ import './Header.scss';
 import CartIcon from '../cart-icon/CartIcon';
 import CartDropDown from '../cart-dropdown/CartDropDown';
 import { selectCartHidden, selectCartItems } from '../../redux/cart/CartSelectors';
-import { selectCurrentUser } from '../../redux/user/UserSelectors';
+import { selectCurrentUser, selectAuthUser } from '../../redux/user/UserSelectors';
 import { createStructuredSelector } from 'reselect';
 import { toggleCanSave } from '../../redux/save/SaveAction';
 import { toggleCartHiddenFalse } from '../../redux/cart/CartActions';
@@ -57,7 +57,8 @@ class Header extends React.Component {
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
     hidden: selectCartHidden,
-    cartItems: selectCartItems
+    cartItems: selectCartItems,
+    authUser: selectAuthUser
 });
 
 const mapDispatchToProps = dispatch => ({
