@@ -15,8 +15,17 @@ import Checkout from './components/pages/Checkout/Checkout';
 import { setCartItems } from './redux/cart/CartActions';
 import toggleCanSave from './redux/save/SaveAction';
 import { selectCanSave } from './redux/save/SaveSelector';
+import WithSpinner from './components/spinner/WithSpinner';
+
+const CheckoutWithSpinner = WithSpinner(Checkout);
+const HomePageWithSpinner = WithSpinner(HomePage);
 
 class App extends React.Component {
+
+  state = {
+    loading: true
+  }
+
   unsubscribeFromAuth = null;
   authUser = null;
 
@@ -44,6 +53,7 @@ class App extends React.Component {
       }
       
       setCurrentUser(authUser);
+      this.setState({loading: false});
     });
   }
 
@@ -56,9 +66,9 @@ class App extends React.Component {
       <div>
         <Header authUser={this.authUser} />
         <Switch>
-          <Route exact component={HomePage} path='/'/>
+          <Route exact render={(props) => <HomePageWithSpinner isLoading={this.state.loading} {...props} />} path='/'/>
           <Route component={Shop} path='/shop'/>
-          <Route exact component={Checkout} path='/checkout' />
+          <Route exact render={(props) => <CheckoutWithSpinner isLoading={this.state.loading} {...props} />} path='/checkout' />
           <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInSignUp />)}/>
         </Switch>
       </div>
