@@ -20,7 +20,10 @@ export const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({prompt: 'select_account'});
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = (event) => {
+    event.preventDefault();
+    auth.signInWithPopup(provider);
+}
 
 export const firestore = firebase.firestore();
 
@@ -66,6 +69,36 @@ export const setUserCartData = async (userAuth, cartItems) => {
     }
 
     await batch.commit();
+}
+
+export const addCollectionsToFireStore = async (collectionKey, objectsToAdd) => {
+    const collectionRef = firestore.collection(collectionKey);
+    
+    const batch = firestore.batch();
+    objectsToAdd.forEach(object => {
+        const newObjectRef = collectionRef.doc();
+
+        batch.set(newObjectRef, object);
+    })
+
+    await batch.commit();
+};
+
+export const convertCollectionsToArray = collections => {
+    const transformedCollections = collections.docs.reduce((accumulator, doc) => {
+        const {title, items} = doc.data();
+
+        accumulator[title.toLowerCase()] = {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+        };
+
+        return accumulator;
+    }, {});
+
+    return transformedCollections;
 }
 
 export default firebase;
