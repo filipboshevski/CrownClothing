@@ -14,15 +14,17 @@ import { selectCurrentUser, selectAuthUser } from '../../redux/user/UserSelector
 import { createStructuredSelector } from 'reselect';
 import { toggleCanSave } from '../../redux/save/SaveAction';
 import { toggleCartHiddenFalse } from '../../redux/cart/CartActions';
+import { signOutUser } from '../../redux/user/UserActions';
 
 class Header extends React.Component {
 
     onSignOut = async () => {
-        const { authUser, cartItems, toggleCanSave, toggleCartHiddenFalse} = this.props;
+        const { authUser, cartItems, toggleCanSave, toggleCartHiddenFalse, signOutUser} = this.props;
         await setUserCartData(authUser, cartItems);
         await auth.signOut();
         toggleCanSave();
         toggleCartHiddenFalse();
+        signOutUser();
     }
 
     render() {
@@ -63,7 +65,8 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
     toggleCanSave: () => dispatch(toggleCanSave()),
-    toggleCartHiddenFalse: () => dispatch(toggleCartHiddenFalse())
+    toggleCartHiddenFalse: () => dispatch(toggleCartHiddenFalse()),
+    signOutUser: () => dispatch(signOutUser())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

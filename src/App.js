@@ -5,8 +5,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Shop from './components/pages/Shop/Shop';
 import Header from './components/header/Header';
 import SignInSignUp from './components/pages/sign-in-sign-up/SignIn-SignUp';
-import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
-import { setCurrentUser, setAuthUser } from './redux/user/UserActions';
+// import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from './redux/user/UserSelectors';
 import { selectCartItems } from './redux/cart/CartSelectors';
@@ -16,6 +15,7 @@ import { setCartItems } from './redux/cart/CartActions';
 import toggleCanSave from './redux/save/SaveAction';
 import { selectCanSave } from './redux/save/SaveSelector';
 import WithSpinner from './components/spinner/WithSpinner';
+import { signInSuccess, isUserPersisted } from './redux/user/UserActions';
 
 const CheckoutWithSpinner = WithSpinner(Checkout);
 const HomePageWithSpinner = WithSpinner(HomePage);
@@ -23,38 +23,32 @@ const SignInSignUpWithSpinner = WithSpinner(SignInSignUp);
 
 class App extends React.Component {
 
+  unsubscribeFromAuth = null;
+
   state = {
     loading: true
   }
-
-  unsubscribeFromAuth = null;
   
   componentDidMount() {
-    const { setCurrentUser, setCartItems, cartItems, toggleCanSave, canSave, setAuthUser } = this.props;
+    const { cartItems, canSave, isUserPersisted } = this.props;
+    const { loading } = this.state;
+
+    isUserPersisted(canSave, loading, cartItems);
     
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
+    //   if (authUser) {
+    //     const snapShot = await firestore.doc(`users/${authUser.uid}`).get();
+    //     const userCartItems = snapShot.data().cartItems;
 
-      if (authUser) {
-        const userRef = await createUserProfileDocument(authUser);
+    //     if (canSave && !this.state.loading) {
+    //       await setUserCartData(authUser, cartItems);
+    //     }
 
-        if (canSave) {
-          await setUserCartData(authUser, cartItems);
-        }
+    //     signInSuccess(authUser);
+    //     setCartItems(userCartItems);
+    //   }
 
-        await userRef.onSnapshot(snapShot => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-          setCartItems(snapShot.data().cartItems);
-          setAuthUser(authUser);
-          toggleCanSave();
-        });
-      }
-      
-      setCurrentUser(authUser);
-      this.setState({loading: false});
-    });
+    this.setState({loading: false});
   }
 
   componentWillUnmount() {
@@ -83,10 +77,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)),
   setCartItems: cartItems => dispatch(setCartItems(cartItems)),
   toggleCanSave: () => dispatch(toggleCanSave()),
-  setAuthUser: authUser => dispatch(setAuthUser(authUser))
+  signInSuccess: authUser => dispatch(signInSuccess(authUser)),
+  isUserPersisted: (canSave, loading, cartItems) => dispatch(isUserPersisted(canSave, loading, cartItems))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
