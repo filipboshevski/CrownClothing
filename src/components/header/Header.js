@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
-import { auth, setUserCartData } from '../firebase/FirebaseUtilities';
 
 import { connect } from 'react-redux';
 
@@ -12,19 +11,14 @@ import CartDropDown from '../cart-dropdown/CartDropDown';
 import { selectCartHidden, selectCartItems } from '../../redux/cart/CartSelectors';
 import { selectCurrentUser, selectAuthUser } from '../../redux/user/UserSelectors';
 import { createStructuredSelector } from 'reselect';
-import { toggleCanSave } from '../../redux/save/SaveAction';
-import { toggleCartHiddenFalse } from '../../redux/cart/CartActions';
 import { signOutUser } from '../../redux/user/UserActions';
+import { toggleCartHiddenFalse } from '../../redux/cart/CartActions';
 
 class Header extends React.Component {
 
     onSignOut = async () => {
-        const { authUser, cartItems, toggleCanSave, toggleCartHiddenFalse, signOutUser} = this.props;
-        await setUserCartData(authUser, cartItems);
-        await auth.signOut();
-        toggleCanSave();
-        toggleCartHiddenFalse();
-        signOutUser();
+        const { authUser, cartItems, signOutUser } = this.props;
+        signOutUser(authUser, cartItems);
     }
 
     render() {
@@ -64,9 +58,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-    toggleCanSave: () => dispatch(toggleCanSave()),
-    toggleCartHiddenFalse: () => dispatch(toggleCartHiddenFalse()),
-    signOutUser: () => dispatch(signOutUser())
-})
+    signOutUser: (authUser, cartItems) => dispatch(signOutUser(authUser, cartItems)),
+    toggleCartHiddenFalse: () => dispatch(toggleCartHiddenFalse())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

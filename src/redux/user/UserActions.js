@@ -24,12 +24,37 @@ export const signInFailure = error => ({
     payload: error
 });
 
-export const signOutUser = () => ({
-    type: userActionTypes.SIGN_OUT_USER
+export const signOutUser = (authUser, cartItems) => ({
+    type: userActionTypes.SIGN_OUT_USER,
+    payload: {authUser, cartItems}
+});
+
+export const signOutSuccess = () => ({
+    type: userActionTypes.SIGN_IN_SUCCESS
+});
+
+export const signOutFailure = error => ({
+    type: userActionTypes.SIGN_IN_FAILURE,
+    payload: error
 });
 
 export const isUserPersisted = (canSave, loading, cartItems) => ({
     type: userActionTypes.IS_USER_PERSISTED,
     payload: {canSave, loading, cartItems}
+});
+
+export const signUpUser = (email, password, displayName) => ({
+    type: userActionTypes.SIGN_UP_USER,
+    payload: {email, password, displayName}
+});
+
+export const signUpSuccess = authUser => ({
+    type: userActionTypes.SIGN_UP_SUCCESS,
+    payload: authUser
+})
+
+export const signUpFailure = error => ({
+    type: userActionTypes.SIGN_UP_FAILURE,
+    payload: error
 })
 

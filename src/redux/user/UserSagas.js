@@ -1,12 +1,13 @@
 import { all, call, takeLatest, put } from 'redux-saga/effects';
 import userActionTypes from './UserTypes';
 import { auth, googleProvider, createUserProfileDocument, setUserCartData, firestore, getCurrentUser } from '../../components/firebase/FirebaseUtilities';
-import { signInSuccess, setAuthUser, signInFailure } from './UserActions';
-import { setCartItems } from '../cart/CartActions';
+import { signInSuccess, setAuthUser, signInFailure, signOutFailure, signOutSuccess, signUpFailure, signUpSuccess } from './UserActions';
+import { setCartItems, toggleCartHiddenFalse } from '../cart/CartActions';
+import toggleCanSave from '../save/SaveAction';
 
-export function* setUserData(user) {
+export function* setUserData(user, additionalData) {
     try {
-        const userRef = yield call(createUserProfileDocument, user);
+        const userRef = yield call(createUserProfileDocument, user, additionalData);
         const snapShot = yield userRef.get();
         yield put(signInSuccess({id: snapShot.id, ...snapShot.data() }));
         yield put(setAuthUser(user));
@@ -67,10 +68,43 @@ export function* onCheckUserAuthStart() {
     yield takeLatest(userActionTypes.IS_USER_PERSISTED, isUserPersisted)
 };
 
+export function* signOutUser({payload: {authUser, cartItems}}) {
+    try {
+        yield setUserCartData(authUser, cartItems);
+        yield auth.signOut();
+        yield put(signOutSuccess());
+        yield put(toggleCanSave());
+        yield put(toggleCartHiddenFalse());
+    }
+    catch (error) {yield put(signOutFailure(error))};
+};
+
+export function* onUserSignOut() {
+    yield takeLatest(userActionTypes.SIGN_OUT_USER, signOutUser);
+};
+
+export function* signUpUser({payload: {email, password, displayName}}) {
+    try {
+        const authUser = yield auth.createUserWithEmailAndPassword(email, password);
+        const { user } = authUser;
+        yield setUserData(user, { displayName });
+
+        yield put(signUpSuccess(authUser));
+    } catch (error) {
+        yield put(signUpFailure(error));
+    };
+};
+
+export function* onUserSignUp() {
+    yield takeLatest(userActionTypes.SIGN_UP_USER, signUpUser);
+};
+
 export function* userSagas() {
     yield all([
         call(onGoogleSignInStart),
         call(onEmailSignInStart),
-        call(onCheckUserAuthStart)
+        call(onCheckUserAuthStart),
+        call(onUserSignOut),
+        call(onUserSignUp)
     ])
 };
