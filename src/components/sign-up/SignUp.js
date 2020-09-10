@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import './SignUp.scss';
 import FormInput from '../form-input/FormInput';
 import CustomButton from '../custom-button/CustomButton';
-import { auth, createUserProfileDocument } from '../firebase/FirebaseUtilities';
+import { connect } from 'react-redux';
+import { signUpUser } from '../../redux/user/UserActions';
 
 class SignUp extends Component {
     constructor() {
@@ -21,6 +22,7 @@ class SignUp extends Component {
         event.preventDefault();
 
         const {displayName, email, password, confirmPassword} = this.state;
+        const { signUpUser } = this.props;
 
         if (password !== confirmPassword) {
             alert('Passwords do not match!');
@@ -28,8 +30,7 @@ class SignUp extends Component {
         }
 
         try {
-            const { user } = await auth.createUserWithEmailAndPassword(email, password);
-            await createUserProfileDocument(user, { displayName });
+            signUpUser(email, password, displayName);
 
             this.setState ({
                 displayName: '',
@@ -39,8 +40,8 @@ class SignUp extends Component {
             });
         } catch (error) {
             console.error(error);
-        }
-    }
+        };
+    };
 
     handleChange = event => {
         const {name, value} = event.target;
@@ -67,4 +68,8 @@ class SignUp extends Component {
     }
 }
 
-export default SignUp;
+const mapDispatchToProps = dispatch => ({
+    signUpUser: (email, password, displayName) => dispatch(signUpUser(email, password, displayName))
+})
+
+export default connect(null, mapDispatchToProps)(SignUp);
