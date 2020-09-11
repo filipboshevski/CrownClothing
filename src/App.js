@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import HomePage from './components/pages/Homepage/HomePage';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Shop from './components/pages/Shop/Shop';
 import Header from './components/header/Header';
 import SignInSignUp from './components/pages/sign-in-sign-up/SignIn-SignUp';
-// import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
 import { connect } from 'react-redux';
-import { selectCurrentUser } from './redux/user/UserSelectors';
+import { selectAuthUser, selectCurrentUser } from './redux/user/UserSelectors';
 import { selectCartItems } from './redux/cart/CartSelectors';
 import { createStructuredSelector } from 'reselect';
 import Checkout from './components/pages/Checkout/Checkout';
 import { setCartItems } from './redux/cart/CartActions';
 import toggleCanSave from './redux/save/SaveAction';
-import { selectCanSave } from './redux/save/SaveSelector';
+import { selectCanSave, selectIsLoading } from './redux/save/SaveSelector';
 import WithSpinner from './components/spinner/WithSpinner';
 import { signInSuccess, isUserPersisted } from './redux/user/UserActions';
 
@@ -21,46 +20,31 @@ const CheckoutWithSpinner = WithSpinner(Checkout);
 const HomePageWithSpinner = WithSpinner(HomePage);
 const SignInSignUpWithSpinner = WithSpinner(SignInSignUp);
 
-class App extends React.Component {
+const App = ({currentUser, cartItems, canSave, isUserPersisted, isLoading, authUser}) => {
 
-  unsubscribeFromAuth = null;
+  useEffect(() => {
+    isUserPersisted(canSave, isLoading, cartItems);
+  }, [isUserPersisted]);
 
-  state = {
-    loading: true
-  }
-  
-  componentDidMount() {
-    const { cartItems, canSave, isUserPersisted } = this.props;
-    const { loading } = this.state;
-
-    isUserPersisted(canSave, loading, cartItems);
-
-    this.setState({loading: false});
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-  
-  render() {
-    return (
-      <div>
-        <Header authUser={this.authUser} />
-        <Switch>
-          <Route exact render={(props) => <HomePageWithSpinner isLoading={this.state.loading} {...props} />} path='/'/>
-          <Route component={Shop} path='/shop'/>
-          <Route exact render={(props) => <CheckoutWithSpinner isLoading={this.state.loading} {...props} />} path='/checkout' />
-          <Route exact path='/signin' render={(props) => this.props.currentUser ? (<Redirect to='/' />) : (<SignInSignUpWithSpinner isLoading={this.state.loading} {...props} />)}/>
-        </Switch>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Header authUser={authUser} />
+      <Switch>
+        <Route exact render={(props) => <HomePageWithSpinner isLoading={isLoading} {...props} />} path='/'/>
+        <Route component={Shop} path='/shop'/>
+        <Route exact render={(props) => <CheckoutWithSpinner isLoading={isLoading} {...props} />} path='/checkout' />
+        <Route exact path='/signin' render={(props) => currentUser ? (<Redirect to='/' />) : (<SignInSignUpWithSpinner isLoading={isLoading} {...props} />)}/>
+      </Switch>
+    </div>
+  );
 }
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   cartItems: selectCartItems,
-  canSave: selectCanSave
+  canSave: selectCanSave,
+  isLoading: selectIsLoading,
+  authUser: selectAuthUser
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
-    canSave: false
+    canSave: false,
+    isLoading: true
 };
 
 export const saveReducer = (state=INITIAL_STATE, action) => {
@@ -8,6 +9,11 @@ export const saveReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 canSave: !state.canSave
+            }
+        case 'TOGGLE_IS_LOADING':
+            return {
+                ...state,
+                isLoading: !state.isLoading
             }
         default:
             return state;

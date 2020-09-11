@@ -6,3 +6,8 @@ export const selectCanSave = createSelector(
     [selectSave],
     save => save.canSave
 );
+
+export const selectIsLoading = createSelector(
+    [selectSave],
+    save => save.isLoading
+);

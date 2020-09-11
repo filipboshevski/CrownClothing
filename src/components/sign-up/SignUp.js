@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import './SignUp.scss';
 import FormInput from '../form-input/FormInput';
@@ -9,8 +9,6 @@ import { signUpUser } from '../../redux/user/UserActions';
 const SignUp = ({signUpUser}) => {
     const [userCredentials, setCredentials] = useState({displayName: '', email: '', password:'', confirmPassword: ''});
     const { displayName, email, password, confirmPassword } = userCredentials;
-
-    useEffect(() => console.log(userCredentials), [userCredentials]);
 
     const handleSubmit = async event => {
         event.preventDefault();

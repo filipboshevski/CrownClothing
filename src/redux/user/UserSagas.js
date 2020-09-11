@@ -3,7 +3,7 @@ import userActionTypes from './UserTypes';
 import { auth, googleProvider, createUserProfileDocument, setUserCartData, firestore, getCurrentUser } from '../../components/firebase/FirebaseUtilities';
 import { signInSuccess, setAuthUser, signInFailure, signOutFailure, signOutSuccess, signUpFailure, signUpSuccess } from './UserActions';
 import { setCartItems, toggleCartHiddenFalse } from '../cart/CartActions';
-import toggleCanSave from '../save/SaveAction';
+import toggleCanSave, { toggleIsLoading } from '../save/SaveAction';
 
 export function* setUserData(user, additionalData) {
     try {
@@ -58,7 +58,10 @@ export function* isUserPersisted({payload: {canSave, loading, cartItems}}) {
 
             yield put(signInSuccess(authUser));
             yield put(setCartItems(userCartItems));
+            yield put(toggleIsLoading());
         };
+
+        yield put(toggleIsLoading());
     } catch (error) {
         yield put(signInFailure(error));
     };
