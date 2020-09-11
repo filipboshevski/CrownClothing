@@ -34,19 +34,6 @@ class App extends React.Component {
     const { loading } = this.state;
 
     isUserPersisted(canSave, loading, cartItems);
-    
-    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async authUser => {
-    //   if (authUser) {
-    //     const snapShot = await firestore.doc(`users/${authUser.uid}`).get();
-    //     const userCartItems = snapShot.data().cartItems;
-
-    //     if (canSave && !this.state.loading) {
-    //       await setUserCartData(authUser, cartItems);
-    //     }
-
-    //     signInSuccess(authUser);
-    //     setCartItems(userCartItems);
-    //   }
 
     this.setState({loading: false});
   }
