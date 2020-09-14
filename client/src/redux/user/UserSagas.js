@@ -59,6 +59,7 @@ export function* isUserPersisted({payload: {canSave, loading, cartItems}}) {
             yield put(signInSuccess(authUser));
             yield put(setCartItems(userCartItems));
             yield put(toggleIsLoading());
+            return true;
         };
 
         yield put(toggleIsLoading());

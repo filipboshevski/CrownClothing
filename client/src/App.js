@@ -1,11 +1,9 @@
 import React from 'react';
-import './App.css';
 import HomePage from './components/pages/Homepage/HomePage';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Shop from './components/pages/Shop/Shop';
 import Header from './components/header/Header';
 import SignInSignUp from './components/pages/sign-in-sign-up/SignIn-SignUp';
-// import { auth, createUserProfileDocument, setUserCartData } from './components/firebase/FirebaseUtilities';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from './redux/user/UserSelectors';
 import { selectCartItems } from './redux/cart/CartSelectors';
@@ -16,6 +14,7 @@ import toggleCanSave from './redux/save/SaveAction';
 import { selectCanSave, selectIsLoading } from './redux/save/SaveSelector';
 import WithSpinner from './components/spinner/WithSpinner';
 import { signInSuccess, isUserPersisted } from './redux/user/UserActions';
+import GlobalStyles from './GlobalStyles';
 
 const CheckoutWithSpinner = WithSpinner(Checkout);
 const HomePageWithSpinner = WithSpinner(HomePage);
@@ -32,6 +31,7 @@ class App extends React.Component {
     const { isLoading } = this.props;
     return (
       <div>
+        <GlobalStyles />
         <Header authUser={this.authUser} />
         <Switch>
           <Route exact render={(props) => <HomePageWithSpinner isLoading={isLoading} {...props} />} path='/'/>

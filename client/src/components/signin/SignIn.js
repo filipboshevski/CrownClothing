@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 
-import FormInput from '../form-input/FormInput';
-import CustomButton from '../custom-button/CustomButton';
+import {toggleIsLoading} from '../../redux/save/SaveAction';
 
 import './SignIn.scss';
 import { connect } from 'react-redux';
 import { signInWithGoogle, signInWithEmail } from '../../redux/user/UserActions';
+import SignInForm from './SignInForm';
+import withSpinner from '../spinner/WithSpinner';
+import { createStructuredSelector } from 'reselect';
+import {selectIsLoading} from '../../redux/save/SaveSelector';
 
-const SignIn = ({signInWithEmail, signInWithGoogle}) => {
+
+const SignInFormWithSpinner = withSpinner(SignInForm);
+
+const SignIn = ({signInWithEmail, signInWithGoogle, toggleIsLoading, isLoading}) => {
 
     const [userCredentials, setCredentials] = useState({email: '', password: ''});
     const { email, password } = userCredentials;
@@ -15,11 +21,19 @@ const SignIn = ({signInWithEmail, signInWithGoogle}) => {
     const handleSubmit = async event => {
         event.preventDefault();
         try {
+            toggleIsLoading();
             signInWithEmail(email, password);
+            setTimeout(toggleIsLoading, 1000);
             setCredentials({email: '', password: ''});
         } catch (error) {
             console.log(error);
         };
+    };
+
+    const onClickGoogle = () => {
+        toggleIsLoading();
+        signInWithGoogle();
+        setTimeout(toggleIsLoading, 1000);
     };
 
     const handleChange = event => {
@@ -28,24 +42,18 @@ const SignIn = ({signInWithEmail, signInWithGoogle}) => {
     };
 
     return (
-        <div className='sign-in'>
-            <h2 className='title'>I Already Have an Account</h2>
-            <span>Sign in with your email and password</span>
-            <form onSubmit={handleSubmit} >
-                <FormInput label='Email' type='email' name='email' value={email} handleChange={handleChange} required />
-                <FormInput label='Password' type='password' name='password' value={password} handleChange={handleChange} required />
-                <div className='buttons'>
-                    <CustomButton type='submit'>Sign In</CustomButton>
-                    <CustomButton type='button' onClick={signInWithGoogle} isGoogleSignIn>Sign In with Google</CustomButton>
-                </div>
-            </form>
-        </div>
+        <SignInFormWithSpinner isLoading={isLoading} properties={{handleChange, handleSubmit, email, password, onClickGoogle}} />
     )
 }
 
-const mapDispatchToProps = dispatch => ({
-    signInWithGoogle: () => dispatch(signInWithGoogle()),
-    signInWithEmail: (email, password) => dispatch(signInWithEmail(email, password))
+const mapStateToProps = createStructuredSelector({
+    isLoading: selectIsLoading
 })
 
-export default connect(null, mapDispatchToProps)(SignIn);
+const mapDispatchToProps = dispatch => ({
+    signInWithGoogle: () => dispatch(signInWithGoogle()),
+    signInWithEmail: (email, password) => dispatch(signInWithEmail(email, password)),
+    toggleIsLoading: () => dispatch(toggleIsLoading())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
