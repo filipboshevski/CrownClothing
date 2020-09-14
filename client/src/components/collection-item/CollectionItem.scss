@@ -1,10 +1,27 @@
+@mixin mediaQuery($screen) {
+  @if $screen == mobile {
+      @media screen and (max-width: 400px) { @content };
+  }
+  @if $screen == landscape {
+      @media screen and (max-width: 500px) { @content };
+  }
+  @if $screen == tablet {
+      @media screen and (max-width: 800px) { @content };
+  }
+};
+
 .collection-item {
   width: 22vw;
   display: flex;
   flex-direction: column;
   height: 350px;
-  align-items: center;
   position: relative;
+
+  @include mediaQuery(landscape) {
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
 
   .image {
     width: 100%;
@@ -20,6 +37,12 @@
     top: 70%;
     opacity: .85;
     display: none;
+
+    @include mediaQuery(landscape) {
+      display: block;
+      opacity: .8;
+      min-width: unset;
+    }
   }
 
   &:hover {

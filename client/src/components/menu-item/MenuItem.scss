@@ -1,3 +1,15 @@
+@mixin mediaQuery($screen) {
+    @if $screen == mobile {
+        @media screen and (max-width: 400px) { @content };
+    }
+    @if $screen == landscape {
+        @media screen and (max-width: 500px) { @content };
+    }
+    @if $screen == tablet {
+        @media screen and (max-width: 800px) { @content };
+    }
+};
+
 .menu-item {
     min-width: 30%;
     height: 240px;
@@ -8,6 +20,20 @@
     border: 1px solid black;
     margin: 0 7.5px 15px;
     overflow: hidden;
+
+    @include mediaQuery(tablet) {
+        height: 200px;
+    }
+
+    @include mediaQuery(landscape) {
+        height: 200px;
+        width: 50vw;
+    }
+
+    @include mediaQuery(mobile) {
+        height: 200px;
+        width: 50vw;
+    }
 
     &:hover {
         cursor: pointer;

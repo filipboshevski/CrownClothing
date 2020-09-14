@@ -1,3 +1,15 @@
+@mixin mediaQuery($screen) {
+  @if $screen == mobile {
+      @media screen and (max-width: 400px) { @content };
+  }
+  @if $screen == landscape {
+      @media screen and (max-width: 500px) { @content };
+  }
+  @if $screen == tablet {
+      @media screen and (max-width: 800px) { @content };
+  }
+};
+
 .collection-preview {
     display: flex;
     flex-direction: column;
@@ -7,13 +19,26 @@
       font-size: 28px;
       margin-bottom: 25px;
       cursor: pointer;
+
+      @include mediaQuery(tablet) {
+        text-align: center;
+      }
     }
   
     .preview {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      column-gap: 40px;
-      row-gap: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: 80vw;
+
+      @include mediaQuery(tablet) {
+        column-gap: 0;
+      }
+
+      @include mediaQuery(landscape) {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin: auto;
+      }
     }
     
   }
