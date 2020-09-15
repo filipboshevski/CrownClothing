@@ -19,7 +19,7 @@ app.use(cors());
 
 app.get('*', (req, res) => {
     console.log('New user detected');
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 app.listen(port, error => {
