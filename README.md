@@ -34,7 +34,7 @@ To run the Crown Clothing application locally, follow these steps:
 1. Clone the repository
 
 ```
-git clone https://github.com/your-username/crown-clothing.git
+git clone https://github.com/filipboshevski/crown-clothing.git
 ```
 
 2. Navigate to the project directory
