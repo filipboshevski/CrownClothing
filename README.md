@@ -2,6 +2,8 @@
 
 Crown Clothing is a feature-rich online e-commerce web store designed to provide a seamless shopping experience for users looking to purchase clothing merchandise. Built with modern web technologies, this project leverages a combination of Node, Sass, React, Express, Firebase, Firestore, Redux, and Redux-Saga to create a robust and efficient platform.
 
+![alt_text][main_page]
+
 ## Features
 
 ### 1. Google Firebase Authentication
@@ -58,3 +60,6 @@ npm start
 ## Contributing
 
 If you'd like to contribute to Crown Clothing, please fork the repository and create a pull request. We welcome contributions to enhance features, fix bugs, or improve the overall user experience.
+
+[main_page]: https://raw.githubusercontent.com/filipboshevski/CrownClothing/dev/main.png "Main"
+
